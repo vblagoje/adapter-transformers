@@ -136,8 +136,8 @@ def main():
             with open(path, "r") as f:
                 return f.read().splitlines()
         else:
-            return ['ADJ', 'ADP', 'ADV', 'AUX', 'CCONJ', 'DET', 'INTJ', 'NOUN', 'NUM', 'PART', 'PRON', 'PROPN', 'PUNCT',
-                    'SCONJ', 'SYM', 'VERB', 'X']
+            return ["ADJ", "ADP", "ADV", "AUX", "CCONJ", "DET", "INTJ", "NOUN", "NUM", "PART", "PRON", "PROPN", "PUNCT",
+                    "SCONJ", "SYM", "VERB", "X"]
 
     # Prepare CONLLU task
     labels = get_labels(data_args.labels)
@@ -287,11 +287,13 @@ def main():
                 with open(os.path.join(data_args.data_dir, "test.txt"), "r") as f:
                     example_id = 0
                     for sentence in parse_incr(f):
+                        s_p = preds_list[example_id]
+                        out = ""
                         for token in sentence:
-                            # output is triplet: sample, truth label, prediction label
-                            output_line = token["form"] + ", " + token["upos"] + ", " + preds_list[example_id].pop(0)
-                            writer.write(output_line)
-                            example_id += 1
+                            out += f'{token["form"]} ({token["upos"]}|{s_p.pop(0)}) '
+                        out += "\n"
+                        writer.write(out)
+                        example_id += 1
     return results
 
 
