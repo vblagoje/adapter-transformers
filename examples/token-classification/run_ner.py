@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """ Fine-tuning the library models for named entity recognition on CoNLL-2003. """
-import inspect
 import logging
 import os
 import sys
@@ -78,9 +77,9 @@ class DataTrainingArguments:
     data_dir: str = field(
         metadata={"help": "The input data dir. Should contain the .txt files for a CoNLL-2003-formatted task."}
     )
-    labels: Optional[str] = field(
-        metadata={"help": "Path to a file containing all labels. If not specified, CoNLL-2003 labels are used."}
-    )
+    # labels: Optional[str] = field(
+    #     metadata={"help": "Path to a file containing all labels. If not specified, CoNLL-2003 labels are used."}
+    # )
     max_seq_length: int = field(
         default=128,
         metadata={
@@ -149,7 +148,7 @@ def main():
     set_seed(training_args.seed)
 
     # Prepare CONLL-2003 task
-    labels = token_classification_task.get_labels(data_args.labels)
+    labels = token_classification_task.get_labels("")
     label_map: Dict[int, str] = {i: label for i, label in enumerate(labels)}
     num_labels = len(labels)
 
@@ -179,7 +178,7 @@ def main():
     )
 
     # Setup adapters
-    task_name = "ner"
+    task_name = model_args.task_type.lower()
     language = adapter_args.language
     setup_task_adapter_training(model, task_name, adapter_args)
     if adapter_args.train_adapter:

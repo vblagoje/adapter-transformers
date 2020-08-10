@@ -1,28 +1,28 @@
 if ! [ -f ./dev.txt ]; then
   echo "Download dev dataset...."
-  curl -L -o ./dev.txt 'https://github.com/UniversalDependencies/UD_English-EWT/raw/master/en_ewt-ud-dev.conllu'
+  curl -L -o ./dev.txt 'https://github.com/davidsbatista/NER-datasets/raw/master/CONLL2003/valid.txt'
 fi
 
 if ! [ -f ./test.txt ]; then
   echo "Download test dataset...."
-  curl -L -o ./test.txt 'https://github.com/UniversalDependencies/UD_English-EWT/raw/master/en_ewt-ud-test.conllu'
+  curl -L -o ./test.txt 'https://github.com/davidsbatista/NER-datasets/raw/master/CONLL2003/test.txt'
 fi
 
 if ! [ -f ./train.txt ]; then
   echo "Download train dataset...."
-  curl -L -o ./train.txt 'https://github.com/UniversalDependencies/UD_English-EWT/raw/master/en_ewt-ud-train.conllu'
+  curl -L -o ./train.txt 'https://github.com/davidsbatista/NER-datasets/raw/master/CONLL2003/train.txt'
 fi
 
 export MAX_LENGTH=200
 export BERT_MODEL=bert-base-uncased
-export OUTPUT_DIR=postagger-model
+export OUTPUT_DIR=chunker-model
 export BATCH_SIZE=32
 export NUM_EPOCHS=3
 export SAVE_STEPS=750
 export SEED=1
 
 python3 run_ner.py \
---task_type POS \
+--task_type Chunk \
 --data_dir . \
 --model_name_or_path $BERT_MODEL \
 --output_dir $OUTPUT_DIR \

@@ -28,6 +28,7 @@ python3 run_ner.py \
 --per_gpu_train_batch_size $BATCH_SIZE \
 --save_steps $SAVE_STEPS \
 --seed $SEED \
+--train_adapter \
 --do_train \
 --do_eval \
 --do_predict

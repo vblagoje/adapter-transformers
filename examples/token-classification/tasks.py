@@ -11,6 +11,12 @@ logger = logging.getLogger(__name__)
 
 class NER(TokenClassificationTask):
 
+    def __init__(self):
+        self.label_idx = -1
+
+    def __init__(self, label_idx):
+        self.label_idx = label_idx
+
     def read_examples_from_file(self, data_dir, mode: Union[Split, str]) -> List[InputExample]:
         if isinstance(mode, Split):
             mode = mode.value
@@ -31,7 +37,7 @@ class NER(TokenClassificationTask):
                     splits = line.split(" ")
                     words.append(splits[0])
                     if len(splits) > 1:
-                        labels.append(splits[-1].replace("\n", ""))
+                        labels.append(splits[self.label_idx].replace("\n", ""))
                     else:
                         # Examples could have no label for mode = "test"
                         labels.append("O")
@@ -63,6 +69,24 @@ class NER(TokenClassificationTask):
             return labels
         else:
             return ["O", "B-MISC", "I-MISC", "B-PER", "I-PER", "B-ORG", "I-ORG", "B-LOC", "I-LOC"]
+
+
+class Chunk(NER):
+
+    def __init__(self):
+        super().__init__(-2)
+
+    def get_labels(self, path: str) -> List[str]:
+        if path:
+            with open(path, "r") as f:
+                labels = f.read().splitlines()
+            if "O" not in labels:
+                labels = ["O"] + labels
+            return labels
+        else:
+            return ["O",
+                    "B-ADVP", "B-INTJ", "B-LST", "B-PRT", "B-NP", "B-SBAR", "B-VP", "B-ADJP", "B-CONJP", "B-PP",
+                    "I-ADVP", "I-INTJ", "I-LST", "I-PRT", "I-NP", "I-SBAR", "I-VP", "I-ADJP", "I-CONJP", "I-PP"]
 
 
 class POS(TokenClassificationTask):
